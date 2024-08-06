@@ -1,0 +1,5 @@
+"0","```r
+groups <- data.frame(sample = colnames(counts), treatment, donors)
+
+cbind(groups,colnames(counts))
+```"

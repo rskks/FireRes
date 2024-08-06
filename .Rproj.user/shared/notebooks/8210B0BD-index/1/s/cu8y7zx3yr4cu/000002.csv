@@ -1,0 +1,4 @@
+"0","```r
+RawDist <- dist(t(ExpLog2), method = \"euclidean\")
+plot(hclust(RawDist, method = \"average\"))
+```"

@@ -1,0 +1,5 @@
+"0","```r
+DGE <- estimateGLMCommonDisp(DGE, design, verbose = TRUE)
+```"
+"1","Disp = 0.13864 , BCV = 0.3723 
+"

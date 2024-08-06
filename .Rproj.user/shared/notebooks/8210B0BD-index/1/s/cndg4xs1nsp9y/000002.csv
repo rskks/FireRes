@@ -1,0 +1,8 @@
+"0","```r
+treatment_pattern <- (rep(c(\"Untreated\", \"Treatment\"), times = 9))
+treatment <- factor(c(treatment_pattern))
+
+donor_pattern <- c(rep(\"M24\", times = 6), rep(\"M31\", times = 6), rep(\"M32\", times = 6))
+donors <- factor(c(donor_pattern))
+
+```"

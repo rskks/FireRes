@@ -1,0 +1,14 @@
+"0","```r
+plot(-log10(Results$PValue) ~ Results$logFC, 
+     xlab = \"log2 fold change\", ylab = \"-log10 p-value\", 
+     main = \"DE Genes\", xlim = c(-10, 10))
+points(-log10(Results$PValue[Results$ENSEMBL %in% detags]) ~ 
+         Results$logFC[Results$ENSEMBL %in% detags], 
+       col = \"red\", pch = 16)
+```"
+"0","```r
+abline(v = c(-1, 1), col = \"blue\")
+legend(\"topleft\", legend = \"DE genes (FC > 1, p < 0.05)\", pch = 16, 
+       col = \"red\", bty = \"n\")
+
+```"

@@ -1,0 +1,4 @@
+"0","```r
+PCA <- prcomp(t(NormDist))
+plot(PCA$x[ , 1], PCA$x[ , 2], pch = 16)
+```"

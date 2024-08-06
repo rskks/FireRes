@@ -1,0 +1,5 @@
+"0","```r
+plot(PCA$x[ , 1], PCA$x[ , 2], pch = 16, col = treatment, 
+     main = \"Colored by Treatment\")
+legend(\"bottomright\", legend = unique(treatment), pch = 16, col = unique(treatment))
+```"

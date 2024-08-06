@@ -1,0 +1,4 @@
+"0","```r
+de <- decideTests(lrt, adjust.method = \"fdr\")
+summary(de)
+```"

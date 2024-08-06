@@ -1,0 +1,4 @@
+"0","```r
+CPM <- cpm(DGE, normalized.lib.sizes = TRUE, log = TRUE)
+CPM <- as.data.frame(CPM)
+```"

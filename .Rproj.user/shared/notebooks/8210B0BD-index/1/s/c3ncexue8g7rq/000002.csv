@@ -1,0 +1,8 @@
+"0","```r
+annotations <- read.csv(file = \"Annotations.csv\",
+                     header = TRUE, 
+                     row.names = 1)
+DGE <- DGEList(counts = counts, remove.zeros = TRUE, genes = annotations)
+```"
+"1","Removing 15373 rows with all zero counts
+"

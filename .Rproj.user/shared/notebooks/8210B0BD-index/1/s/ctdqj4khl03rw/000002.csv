@@ -1,0 +1,15 @@
+"0","```r
+SampleMedians <- apply(ExpLog2, 2, median) # Find the median value of each column - 2 means column
+GrandMedian <- mean(SampleMedians) # Take the average of those
+CorrectionFactors <- GrandMedian - SampleMedians # Calculate correction factor to apply to data
+CorrectionFactors
+```"
+"1","  CF_M24_EV1 CF_M24_EVPA1   CF_M24_EV2 CF_M24_EVPA2   CF_M24_EV3 
+-0.219473027 -0.070329588  0.832994393 -0.180937605 -0.206533972 
+CF_M24_EVPA3   CF_M31_EV1 CF_M31_EVPA1   CF_M31_EV2 CF_M31_EVPA2 
+-0.140038560  0.453085963  0.178490959  0.157864308 -0.206533972 
+  CF_M31_EV3 CF_M31_EVPA3   CF_M32_EV1 CF_M32_EVPA1   CF_M32_EV2 
+ 0.321095354  0.002904366 -0.389398029 -0.071942790 -0.225924944 
+CF_M32_EVPA2   CF_M32_EV3 CF_M32_EVPA3 
+-0.026827949 -0.167005607 -0.041489298 
+"

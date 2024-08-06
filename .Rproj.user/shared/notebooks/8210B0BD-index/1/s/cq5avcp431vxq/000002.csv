@@ -1,0 +1,4 @@
+"0","```r
+contrast.matrix <- makeContrasts(PA_vs_Unt = treatmentTreatment - treatmentUntreated,
+                                 levels = design)
+```"

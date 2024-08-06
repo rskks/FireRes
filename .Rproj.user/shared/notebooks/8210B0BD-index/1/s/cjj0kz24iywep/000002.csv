@@ -1,0 +1,7 @@
+"0","```r
+fit <- glmFit(DGE, design, contrast = contrast.matrix)
+lrt <- glmLRT(fit, contrast = contrast.matrix[,\"PA_vs_Unt\"]) 
+topTags(lrt)
+```"
+"1","Coefficient:  1*treatmentTreatment -1*treatmentUntreated 
+"

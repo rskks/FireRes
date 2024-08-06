@@ -1,0 +1,4 @@
+"0","```r
+NormDist <- dist(t(ExpNorm), method = \"euclidean\")
+plot(hclust(NormDist, method = \"average\"))
+```"

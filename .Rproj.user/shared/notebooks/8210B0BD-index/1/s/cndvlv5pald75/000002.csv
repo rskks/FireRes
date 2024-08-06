@@ -1,0 +1,9 @@
+"0","```r
+de <- decideTests(lrt, adjust.method = \"fdr\")
+summary(de)
+```"
+"1","       1*treatmentTreatment -1*treatmentUntreated
+Down                                         2286
+NotSig                                       8540
+Up                                           2078
+"

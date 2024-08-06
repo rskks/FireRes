@@ -1,0 +1,33 @@
+"0","```r
+design <- model.matrix(~ 0 + treatment + donors, data = counts)
+rownames(design) <- colnames(DGE)
+design
+```"
+"1","             treatmentTreatment treatmentUntreated donorsM31 donorsM32
+CF_M24_EV1                    0                  1         0         0
+CF_M24_EVPA1                  1                  0         0         0
+CF_M24_EV2                    0                  1         0         0
+CF_M24_EVPA2                  1                  0         0         0
+CF_M24_EV3                    0                  1         0         0
+CF_M24_EVPA3                  1                  0         0         0
+CF_M31_EV1                    0                  1         1         0
+CF_M31_EVPA1                  1                  0         1         0
+CF_M31_EV2                    0                  1         1         0
+CF_M31_EVPA2                  1                  0         1         0
+CF_M31_EV3                    0                  1         1         0
+CF_M31_EVPA3                  1                  0         1         0
+CF_M32_EV1                    0                  1         0         1
+CF_M32_EVPA1                  1                  0         0         1
+CF_M32_EV2                    0                  1         0         1
+CF_M32_EVPA2                  1                  0         0         1
+CF_M32_EV3                    0                  1         0         1
+CF_M32_EVPA3                  1                  0         0         1
+attr(,\"assign\")
+[1] 1 1 2 2
+attr(,\"contrasts\")
+attr(,\"contrasts\")$treatment
+[1] \"contr.treatment\"
+
+attr(,\"contrasts\")$donors
+[1] \"contr.treatment\"
+"
