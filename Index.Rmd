@@ -10,6 +10,14 @@ output:
     toc_float: true
 ---
 
+I took crafting the Fire Resist piece very seriously. The issue is - with Tier and other stuff it quickly becomes complicated. And it was bothering me a lot - What's the real bis for Heat2? Heat3? How does it change if I don't want to grind Argent Crusader rep? Is it better to run Timbermaw Shoulder and/or Kazzak pants if I need to fill once piece with Fine Flarecore gear. Is it more optimal to lose some stats on jewelry or misc stuff like cape? How do I balance 6P and necessary FireRes so I'm minmaxing my damage?
+
+To address these very important questions I made a script in R (I'm in biology so I don't know any better) which you can feed your shortlist of potential bis pieces, set how much Fire Resist you need, and it will spit out top-10 best gear combinations
+
+It filters out all combinations that don't have at least 6 Tier pieces, then keeps only gear combinations for which total fire resist >= your input value and then sorts it by item power (ShadowEP in my case - this is stat weight from sixtyupgrades), and keeps top 10).
+
+The script is below, you can run it in RStudio or any other R environment. You need to have the following libraries installed: readxl, dplyr, tidyr, combinat, writexl. You also need to have an Excel file with your shortlist of items. The file should have columns: Slot, Item, ShadowEP, FireRes, Tier. Slot is the gear slot (Head, Neck, Shoulder, etc), Item is the item name, ShadowEP is the stat weight from sixtyupgrades, FireRes is the fire resistance value, Tier is whether it's a Tier piece or not. You can download the Excel file I used here.
+
 ## Loading the required libraries and setting up the functions
 
 ### Loading the required libraries
