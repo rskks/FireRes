@@ -10,7 +10,7 @@ output:
     toc_float: true
 ---
 
-I took crafting the Fire Resist piece very seriously. The issue is - with Tier and other stuff it quickly becomes complicated. And it was bothering me a lot - What's the real bis for Heat2? Heat3? How does it change if I don't want to grind Argent Crusader rep? Is it better to run Timbermaw Shoulder and/or Kazzak pants if I need to fill once piece with Fine Flarecore gear. Is it more optimal to lose some stats on jewelry or misc stuff like cape? How do I balance 6P and necessary FireRes so I'm minmaxing my damage?
+I took crafting the Fire Resist piece very seriously. The issue is - with Tier and other stuff it quickly becomes complicated. And it was bothering me a lot - What's the real bis for Heat2? Heat3? How does it change if I don't want to grind Argent Crusader rep? How does it change if I dont want to farm Jujus? Is it better to run Timbermaw Shoulder and/or Kazzak pants if I need to fill once piece with Fine Flarecore gear. Is it more optimal to lose some stats on jewelry or misc stuff like cape? How do I balance 6P and necessary FireRes so I'm minmaxing my damage?
 
 To address these very important questions I made a script in R (I'm in biology so I don't know any better) which you can feed your shortlist of potential bis pieces, set how much Fire Resist you need, and it will spit out top-10 best gear combinations
 
@@ -52,12 +52,11 @@ df <- df[c(1:3,6,10)]  # Filter the necessary columns
 ### Function to pre-filter the data into all possible gearset combinations 
 #### With the set number of Tier pieces 
 
-Default number of Tier pieces is 2, can be changed in 'tier_yes_count = 2' to other number 
+Default number of Tier pieces is 2 or more, can be changed in 'min_tier_yes = 2' to other number 
 Warning: if you input too much items, and tier_yes_count is also high it might take forever to calculate
 
 ```{r}
-# Function to find valid combinations
-get_valid_combinations <- function(df, tier_yes_count = 2) {
+get_valid_combinations <- function(df, min_tier_yes_count = 2) {
   # Split data by Slot
   slots <- split(df, df$Slot)
   
@@ -67,8 +66,8 @@ get_valid_combinations <- function(df, tier_yes_count = 2) {
   # Generate combinations
   combn_helper <- function(slot_lists, current_comb = data.frame(), depth = 1) {
     if (depth > length(slot_lists)) {
-      # Check if current_comb has exactly 2 items with Tier == 'Yes'
-      if (sum(current_comb$Tier == 'Yes') == tier_yes_count) {
+      # Check if current_comb has 2 or more items with Tier == 'Yes'
+      if (sum(current_comb$Tier == 'Yes') >= min_tier_yes_count) {
         valid_combinations <<- append(valid_combinations, list(current_comb))
       }
       return()
@@ -85,6 +84,7 @@ get_valid_combinations <- function(df, tier_yes_count = 2) {
   
   return(valid_combinations)
 }
+
 ```
 
 #### Without Tier constraint
@@ -313,11 +313,12 @@ create_summary_df <- function(top_combinations) {
 ```{r}
 #Reminder: You have 27 Fire Res from 4 Tierpiece gear, 60(75) from Enchants, and 27 from MotW. 
 #H2: 96 (69 with MotW, 9 with three easy enchants)
-#H3: 226 (199 with MotW, 139 with three easy enchants | If you are using Juju MR pot instead of MotW 161 - with three easy enchants 101 - with AD rep 96)
+#H3: 226 (199 with MotW, 139 with three easy enchants 
+#H3: 226 (If you are using Juju and MR pot instead of MotW 161 - with three easy enchants 101 - with AD rep 86 - with 4P 59)
 
 # User input for the numeric value X
 # X <- as.numeric(readline(prompt = "Enter the numeric value for X: ")) - this is for user set, commenting it out to knit the document
-X <- as.numeric(69)
+X <- as.numeric(59)
 ```
 
 ### Applying the functions

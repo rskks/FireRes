@@ -2758,11 +2758,12 @@ required Fire Resistance</h1>
 <p>I took crafting the Fire Resist piece very seriously. The issue is -
 with Tier and other stuff it quickly becomes complicated. And it was
 bothering me a lot - What’s the real bis for Heat2? Heat3? How does it
-change if I don’t want to grind Argent Crusader rep? Is it better to run
-Timbermaw Shoulder and/or Kazzak pants if I need to fill once piece with
-Fine Flarecore gear. Is it more optimal to lose some stats on jewelry or
-misc stuff like cape? How do I balance 6P and necessary FireRes so I’m
-minmaxing my damage?</p>
+change if I don’t want to grind Argent Crusader rep? How does it change
+if I dont want to farm Jujus? Is it better to run Timbermaw Shoulder
+and/or Kazzak pants if I need to fill once piece with Fine Flarecore
+gear. Is it more optimal to lose some stats on jewelry or misc stuff
+like cape? How do I balance 6P and necessary FireRes so I’m minmaxing my
+damage?</p>
 <p>To address these very important questions I made a script in R (I’m
 in biology so I don’t know any better) which you can feed your shortlist
 of potential bis pieces, set how much Fire Resist you need, and it will
@@ -2827,11 +2828,10 @@ df &lt;- df[c(1:3,6,10)]  # Filter the necessary columns</code></pre>
 combinations</h3>
 <div id="with-the-set-number-of-tier-pieces" class="section level4">
 <h4>With the set number of Tier pieces</h4>
-<p>Default number of Tier pieces is 2, can be changed in ‘tier_yes_count
-= 2’ to other number Warning: if you input too much items, and
-tier_yes_count is also high it might take forever to calculate</p>
-<pre class="r"><code># Function to find valid combinations
-get_valid_combinations &lt;- function(df, tier_yes_count = 2) {
+<p>Default number of Tier pieces is 2 or more, can be changed in
+‘min_tier_yes = 2’ to other number Warning: if you input too much items,
+and tier_yes_count is also high it might take forever to calculate</p>
+<pre class="r"><code>get_valid_combinations &lt;- function(df, min_tier_yes_count = 2) {
   # Split data by Slot
   slots &lt;- split(df, df$Slot)
   
@@ -2841,8 +2841,8 @@ get_valid_combinations &lt;- function(df, tier_yes_count = 2) {
   # Generate combinations
   combn_helper &lt;- function(slot_lists, current_comb = data.frame(), depth = 1) {
     if (depth &gt; length(slot_lists)) {
-      # Check if current_comb has exactly 2 items with Tier == &#39;Yes&#39;
-      if (sum(current_comb$Tier == &#39;Yes&#39;) == tier_yes_count) {
+      # Check if current_comb has 2 or more items with Tier == &#39;Yes&#39;
+      if (sum(current_comb$Tier == &#39;Yes&#39;) &gt;= min_tier_yes_count) {
         valid_combinations &lt;&lt;- append(valid_combinations, list(current_comb))
       }
       return()
@@ -3082,11 +3082,12 @@ create_summary_df &lt;- function(top_combinations) {
 <h3>Inputing the Fire Resistance value X</h3>
 <pre class="r"><code>#Reminder: You have 27 Fire Res from 4 Tierpiece gear, 60(75) from Enchants, and 27 from MotW. 
 #H2: 96 (69 with MotW, 9 with three easy enchants)
-#H3: 226 (199 with MotW, 139 with three easy enchants | If you are using Juju MR pot instead of MotW 161 - with three easy enchants 101 - with AD rep 96)
+#H3: 226 (199 with MotW, 139 with three easy enchants 
+#H3: 226 (If you are using Juju and MR pot instead of MotW 161 - with three easy enchants 101 - with AD rep 86 - with 4P 59)
 
 # User input for the numeric value X
 # X &lt;- as.numeric(readline(prompt = &quot;Enter the numeric value for X: &quot;)) - this is for user set, commenting it out to knit the document
-X &lt;- as.numeric(69)</code></pre>
+X &lt;- as.numeric(59)</code></pre>
 </div>
 <div id="applying-the-functions" class="section level3">
 <h3>Applying the functions</h3>
@@ -3105,48 +3106,48 @@ X &lt;- as.numeric(69)</code></pre>
 <h4>Write down the results in a new data frame</h4>
 <pre class="r"><code>summary_df &lt;- create_summary_df(top_combinations)
 print(summary_df[1:30,])</code></pre>
-<pre><code>##    CombinationNumber     Slot                      Item TotalShadowEP
-## 1                  1     Back    Drape of the Fire Lord           336
-## 2                  1    Chest      Garments of Prophecy           336
-## 3                  1  Finger1       Ring of Spell Power           336
-## 4                  1  Finger2     Dragonslayer&#39;s Signet           336
-## 5                  1    Hands         Hands of Prophecy           336
-## 6                  1     Legs      Fel Infused Leggings           336
-## 7                  1     Neck   Choker of the Fire Lord           336
-## 8                  1 Shoulder     Fine Flarecore Mantle           336
-## 9                  1  Trinket            Briarwood Reed           336
-## 10                 1     Wand           Crimson Shocker           336
-## 11                 1     Back    Drape of the Fire Lord           336
-## 12                 1    Chest      Garments of Prophecy           336
-## 13                 1  Finger1     Dragonslayer&#39;s Signet           336
-## 14                 1  Finger2       Ring of Spell Power           336
-## 15                 1    Hands         Hands of Prophecy           336
-## 16                 1     Legs      Fel Infused Leggings           336
-## 17                 1     Neck   Choker of the Fire Lord           336
-## 18                 1 Shoulder     Fine Flarecore Mantle           336
-## 19                 1  Trinket            Briarwood Reed           336
-## 20                 1     Wand           Crimson Shocker           336
-## 21                 2     Back Brilliant Chromatic Cloak           333
-## 22                 2    Chest      Garments of Prophecy           333
-## 23                 2  Finger1       Ring of Spell Power           333
-## 24                 2  Finger2     Dragonslayer&#39;s Signet           333
-## 25                 2    Hands         Hands of Prophecy           333
-## 26                 2     Legs      Fel Infused Leggings           333
-## 27                 2     Neck   Choker of the Fire Lord           333
-## 28                 2 Shoulder     Fine Flarecore Mantle           333
-## 29                 2  Trinket            Briarwood Reed           333
-## 30                 2     Wand           Crimson Shocker           333
+<pre><code>##    CombinationNumber     Slot                    Item TotalShadowEP
+## 1                  1     Back  Drape of the Fire Lord           337
+## 2                  1    Chest    Garments of Prophecy           337
+## 3                  1  Finger1     Ring of Spell Power           337
+## 4                  1  Finger2   Dragonslayer&#39;s Signet           337
+## 5                  1    Hands       Hands of Prophecy           337
+## 6                  1     Legs    Fel Infused Leggings           337
+## 7                  1     Neck Choker of the Fire Lord           337
+## 8                  1 Shoulder   Fine Flarecore Mantle           337
+## 9                  1  Trinket          Briarwood Reed           337
+## 10                 1     Wand    Skul&#39;s Ghastly Touch           337
+## 11                 2     Back  Drape of the Fire Lord           336
+## 12                 2    Chest    Garments of Prophecy           336
+## 13                 2  Finger1     Ring of Spell Power           336
+## 14                 2  Finger2   Dragonslayer&#39;s Signet           336
+## 15                 2    Hands       Hands of Prophecy           336
+## 16                 2     Legs    Fel Infused Leggings           336
+## 17                 2     Neck Choker of the Fire Lord           336
+## 18                 2 Shoulder   Fine Flarecore Mantle           336
+## 19                 2  Trinket          Briarwood Reed           336
+## 20                 2     Wand         Crimson Shocker           336
+## 21                 3     Back  Drape of the Fire Lord           336
+## 22                 3    Chest    Garments of Prophecy           336
+## 23                 3  Finger1     Ring of Spell Power           336
+## 24                 3  Finger2        Necromantic Band           336
+## 25                 3    Hands       Hands of Prophecy           336
+## 26                 3     Legs    Fel Infused Leggings           336
+## 27                 3     Neck Choker of the Fire Lord           336
+## 28                 3 Shoulder   Fine Flarecore Mantle           336
+## 29                 3  Trinket          Briarwood Reed           336
+## 30                 3     Wand         Crimson Shocker           336
 ##    TotalFireRes
-## 1            72
-## 2            72
-## 3            72
-## 4            72
-## 5            72
-## 6            72
-## 7            72
-## 8            72
-## 9            72
-## 10           72
+## 1            62
+## 2            62
+## 3            62
+## 4            62
+## 5            62
+## 6            62
+## 7            62
+## 8            62
+## 9            62
+## 10           62
 ## 11           72
 ## 12           72
 ## 13           72
@@ -3157,16 +3158,16 @@ print(summary_df[1:30,])</code></pre>
 ## 18           72
 ## 19           72
 ## 20           72
-## 21           70
-## 22           70
-## 23           70
-## 24           70
-## 25           70
-## 26           70
-## 27           70
-## 28           70
-## 29           70
-## 30           70</code></pre>
+## 21           62
+## 22           62
+## 23           62
+## 24           62
+## 25           62
+## 26           62
+## 27           62
+## 28           62
+## 29           62
+## 30           62</code></pre>
 </div>
 </div>
 <div id="writing-the-summary-to-an-excel-file" class="section level3">
