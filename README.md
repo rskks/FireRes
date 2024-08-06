@@ -18,6 +18,8 @@ The script is below, you can run it in RStudio or any other R environment. You n
 
 ### ShinyApp to execute on your own using your table built like a Sample table
 
+[https://rskks.shinyapps.io/FireRes-SOD/](https://rskks.shinyapps.io/FireRes-SOD/)
+
 ### Disclaimers
 
 For your own table you need to have the same column names and order, but you can populate them however you want given that:
