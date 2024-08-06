@@ -1,0 +1,253 @@
+library(shiny)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(combinat)
+library(writexl)
+
+# Define UI
+ui <- fluidPage(
+  tags$head(
+    tags$style(HTML("
+      body.light-mode {
+        background-color: #f8f9fa;
+        color: #343a40;
+      }
+      body.dark-mode {
+        background-color: #343a40;
+        color: #f8f9fa;
+      }
+      .light-mode .panel, .light-mode .well {
+        background-color: #ffffff;
+        border-color: #dddddd;
+      }
+      .dark-mode .panel, .dark-mode .well {
+        background-color: #454d55;
+        border-color: #555555;
+      }
+      .dark-mode .btn {
+        background-color: #454d55;
+        color: #ffffff;
+        border-color: #555555;
+      }
+      .light-mode .btn {
+        background-color: #e9ecef;
+        color: #343a40;
+        border-color: #dddddd;
+      }
+      .dark-mode input, .dark-mode select, .dark-mode textarea {
+        background-color: #454d55;
+        color: #f8f9fa;
+        border-color: #555555;
+      }
+      .light-mode input, .light-mode select, .light-mode textarea {
+        background-color: #ffffff;
+        color: #343a40;
+        border-color: #dddddd;
+      }
+      .toggle-switch {
+        margin-bottom: 20px;
+      }
+      .toggle-switch input {
+        display: none;
+      }
+      .toggle-switch label {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+      }
+      .toggle-switch label:before {
+        content: '';
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        width: 26px;
+        height: 26px;
+        background-color: #f8f9fa;
+        transition: transform 0.3s;
+      }
+      .toggle-switch input:checked + label:before {
+        transform: translateX(26px);
+        background-color: #343a40;
+      }
+      .toggle-switch label:after {
+        content: 'Dark Mode';
+        position: absolute;
+        top: 50%;
+        left: 70px;
+        transform: translateY(-50%);
+        color: inherit;
+      }
+    "))
+  ),
+  div(class = "toggle-switch",
+      tags$input(id = "dark_mode", type = "checkbox"),
+      tags$label(`for` = "dark_mode")
+  ),
+  titlePanel("Best Gear Combination Finder for SOD Heat levels"),
+  sidebarLayout(
+    sidebarPanel(
+      fileInput("file1", "Choose Excel File",
+                accept = c(".xlsx")),
+      p("If you don't have your own table, you can find a sample table with BiS options for Shadow Priest here:"),
+      a("Sample Excel File", href = "https://github.com/rskks/FireRes", target = "_blank"),
+      br(), br(),
+      numericInput("X", "Enter the needed FireRes (excluding enchants and buffs):", value = 0, min = 0),
+      numericInput("min_tier_yes_count", "Enter the minimum number of Tier pieces to equip:", value = 2, min = 0),
+      actionButton("process", "Process"),
+      downloadButton("downloadData", "Download Summary")
+    ),
+    mainPanel(
+      tableOutput("summaryTable")
+    )
+  )
+)
+
+# Define server logic
+server <- function(input, output, session) {
+  observe({
+    addClass <- if (input$dark_mode) "dark-mode" else "light-mode"
+    removeClass <- if (input$dark_mode) "light-mode" else "dark-mode"
+    session$sendCustomMessage("switchMode", list(add = addClass, remove = removeClass))
+  })
+  
+  df <- reactive({
+    req(input$file1)
+    read_excel(input$file1$datapath)
+  })
+  
+  processData <- reactive({
+    req(df(), input$X, input$min_tier_yes_count)
+    
+    df_mod <- df() %>%
+      mutate(
+        Slot = as.factor(Slot),
+        Item = as.character(Item),
+        ShadowEP = as.numeric(ShadowEP),
+        FireRes = as.numeric(FireRes),
+        Tier = as.factor(Tier)
+      )
+    
+    get_valid_combinations <- function(df, min_tier_yes_count = 2) {
+      slots <- split(df, df$Slot)
+      valid_combinations <- list()
+      
+      combn_helper <- function(slot_lists, current_comb, depth) {
+        if (depth > length(slot_lists)) {
+          if (sum(current_comb$Tier == 'Yes') >= min_tier_yes_count) {
+            valid_combinations <<- append(valid_combinations, list(current_comb))
+          }
+          return()
+        }
+        for (i in seq_len(nrow(slot_lists[[depth]]))) {
+          combn_helper(slot_lists, rbind(current_comb, slot_lists[[depth]][i, , drop = FALSE]), depth + 1)
+        }
+      }
+      combn_helper(slots, data.frame(), 1)
+      return(valid_combinations)
+    }
+    
+    valid_combinations <- get_valid_combinations(df_mod, input$min_tier_yes_count)
+    
+    filter_combinations_by_fire_res <- function(combinations, X) {
+      filtered_combinations <- list()
+      for (comb in combinations) {
+        comb$FireRes <- as.numeric(comb$FireRes)
+        fire_res_sum <- sum(comb$FireRes, na.rm = TRUE)
+        if (!is.na(fire_res_sum) && !is.null(fire_res_sum) && fire_res_sum >= X && fire_res_sum <= X + 15) {
+          filtered_combinations <- append(filtered_combinations, list(comb))
+        }
+      }
+      return(filtered_combinations)
+    }
+    
+    filtered_combinations <- filter_combinations_by_fire_res(valid_combinations, input$X)
+    
+    get_top_combinations_by_shadow_ep <- function(combinations, top_n = 250) {
+      combinations_with_totals <- lapply(combinations, function(comb) {
+        total_shadow_ep <- sum(comb$ShadowEP)
+        total_fire_res <- sum(comb$FireRes)
+        comb$total_shadow_ep <- total_shadow_ep
+        comb$total_fire_res <- total_fire_res
+        return(comb)
+      })
+      
+      combinations_with_totals_df <- do.call(rbind, lapply(combinations_with_totals, function(comb) {
+        data.frame(
+          Slot = comb$Slot,
+          Item = comb$Item,
+          ShadowEP = comb$ShadowEP,
+          FireRes = comb$FireRes,
+          Tier = comb$Tier,
+          total_shadow_ep = comb$total_shadow_ep,
+          total_fire_res = comb$total_fire_res,
+          stringsAsFactors = FALSE
+        )
+      }))
+      
+      combinations_with_totals_df$total_shadow_ep <- as.numeric(combinations_with_totals_df$total_shadow_ep)
+      sorted_combinations_df <- combinations_with_totals_df[order(combinations_with_totals_df$total_shadow_ep, decreasing = TRUE), ]
+      top_combinations_df <- head(sorted_combinations_df, top_n)
+      top_combinations <- split(top_combinations_df, seq(nrow(top_combinations_df)))
+      return(top_combinations)
+    }
+    
+    top_combinations <- get_top_combinations_by_shadow_ep(filtered_combinations)
+    
+    create_summary_df <- function(top_combinations) {
+      summary_list <- list()
+      comb_number <- 1
+      for (i in seq_along(top_combinations)) {
+        comb <- top_combinations[[i]]
+        current_shadow_ep <- comb$total_shadow_ep
+        current_fire_res <- comb$total_fire_res
+        if (i > 1) {
+          prev_comb <- top_combinations[[i - 1]]
+          prev_shadow_ep <- prev_comb$total_shadow_ep
+          prev_fire_res <- prev_comb$total_fire_res
+          if (current_shadow_ep != prev_shadow_ep || current_fire_res != prev_fire_res) {
+            comb_number <- comb_number + 1
+          }
+        }
+        if (comb_number > 10) break
+        comb_df <- data.frame(
+          CombinationNumber = comb_number,
+          Slot = comb$Slot,
+          Item = comb$Item,
+          TotalShadowEP = comb$total_shadow_ep,
+          TotalFireRes = comb$total_fire_res,
+          stringsAsFactors = FALSE
+        )
+        summary_list[[i]] <- comb_df
+      }
+      summary_df <- do.call(rbind, summary_list)
+      return(summary_df)
+    }
+    
+    summary_df <- create_summary_df(top_combinations)
+    return(summary_df)
+  })
+  
+  output$summaryTable <- renderTable({
+    req(processData())
+  })
+  
+  output$downloadData <- downloadHandler(
+    filename = function() {
+      paste("summary_", Sys.Date(), ".xlsx", sep = "")
+    },
+    content = function(file) {
+      write_xlsx(processData(), file)
+    }
+  )
+}
+
+# Define custom message handler to switch modes
+shinyServer <- function(input, output, session) {
+  session$sendCustomMessage <- function(type, message) {
+    session$sendCustomMessage(type, message)
+  }
+}
+
+shinyApp(ui = ui, server = server)

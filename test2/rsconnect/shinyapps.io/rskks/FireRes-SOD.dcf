@@ -1,0 +1,12 @@
+name: FireRes-SOD
+title: FireRes-SOD
+username: rskks
+account: rskks
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12417611
+bundleId: 8954397
+url: https://rskks.shinyapps.io/FireRes-SOD/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
