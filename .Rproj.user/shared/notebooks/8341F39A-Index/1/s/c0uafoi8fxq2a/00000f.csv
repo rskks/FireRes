@@ -1,7 +1,0 @@
-"0","#Reminder: You have 27 Fire Res from 4 Tierpiece gear, 60(75) from Enchants, and 27 from MotW. "
-"0","#H2: 96 (69 with MotW, 9 with three easy enchants)"
-"0","#H3: 226 (199 with MotW, 139 with three easy enchants | If you are using Juju MR pot instead of MotW 161 - with three easy enchants 101 - with AD rep 96)"
-"0",""
-"0","# User input for the numeric value X"
-"0","# X <- as.numeric(readline(prompt = ""Enter the numeric value for X: "")) - this is for user set, commenting it out to knit the document"
-"0","X <- as.numeric(69)"
