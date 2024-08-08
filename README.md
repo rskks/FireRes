@@ -6,8 +6,6 @@ To address these very important questions I made a script in R (I’m in biology
 
 It filters out all combinations that don’t have at least 6 Tier pieces, then keeps only gear combinations for which total fire resist >= your input value and then sorts it by item power (ShadowEP in my case - this is stat weight from sixtyupgrades), and keeps top 10).
 
-The script is below, you can run it in RStudio or any other R environment. You need to have the following libraries installed: readxl, dplyr, tidyr, combinat, writexl. You also need to have an Excel file with your shortlist of items. The file should have columns: Slot, Item, ShadowEP, FireRes, Tier. Slot is the gear slot (Head, Neck, Shoulder, etc), Item is the item name, ShadowEP is the stat weight from sixtyupgrades, FireRes is the fire resistance value, Tier is whether it’s a Tier piece or not. You can download the Excel file I used here.
-
 ### Overview and R pipeline:
 
 [https://rskks.github.io/FireRes/Index.html](https://rskks.github.io/FireRes/Index.html)
