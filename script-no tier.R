@@ -6,7 +6,7 @@ library(combinat)
 library(writexl)
 
 # Read the Excel file
-df <- read_excel("input-prebis.xlsx")
+df <- read_excel("20240816.xlsx")
 
 # Convert columns to appropriate data types
 df <- df %>%
@@ -18,7 +18,7 @@ df <- df %>%
     Tier = as.factor(Tier)
   )
 
-df <- df[c(1:3,6,10)]  # Filter the necessary columns
+#df <- df[c(1:3,6,10)]  # Filter the necessary columns
 
 # Function to find valid combinations without Tier constraint
 get_valid_combinations <- function(df) {
@@ -194,6 +194,6 @@ summary_df <- create_summary_df(top_combinations)
 View(summary_df)
 
 # Write summary_df to an Excel file
-write_xlsx(summary_df, "summary_h2flrcr.xlsx")
+write_xlsx(summary_df, "summary_h320240816.xlsx")
 # Print top combinations
 #print(top_combinations)
